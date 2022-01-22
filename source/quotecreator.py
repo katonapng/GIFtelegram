@@ -1,13 +1,17 @@
 import logging
+from collections import defaultdict
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
+from applytext import create_image
+from disk import upload_to_yadisk
 
 # Объект бота
-bot = Bot('bot token')
+token = 'token'
+bot = Bot(token)
 
 # bot_token = getenv("BOT_TOKEN",  parse_mode=types.ParseMode.HTML)
 # if not bot_token:
@@ -16,6 +20,9 @@ bot = Bot('bot token')
 dp = Dispatcher(bot, storage=MemoryStorage())
 # Включаем логирование, чтобы не пропустить важные сообщения
 logging.basicConfig(level=logging.INFO)
+
+
+data = defaultdict(str)
 
 
 class Form(StatesGroup):
@@ -32,17 +39,21 @@ async def cmd_quote(message: types.Message, state: FSMContext):
                              "I would gladly help you create a picture.\n"
                              "Give me the quote for the picture first, "
                              "please.")
-    else:
-        await message.answer("OK, i can create a picture for you.\n"
-                             "It would not hurt you to say please sometimes,"
-                             " you know!\n"
-                             "Give me the quote for the picture first,"
-                             " please.")
+    await message.answer("OK, i can create a picture for you.\n"
+                         "It would not hurt you to say please sometimes,"
+                         " you know!\n"
+                         "Give me the quote for the picture first,"
+                         " please.")
 
 
 @dp.message_handler(state=Form.picture, content_types=['photo'])
 async def process_picture(message: types.Message, state: FSMContext):
-    await message.reply_photo(message.photo[0].file_id)
+    file_id = message.photo[-1].file_id
+    data['picture'] = file_id
+
+    await message.photo[-1].download(destination_file='./photos/'
+                                     f'{file_id}.jpg')
+    await message.reply_photo(file_id)
 
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     buttons = ["Good Picture", "Nope, misclick"]
@@ -53,9 +64,16 @@ async def process_picture(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(Text(equals="Good Picture"))
-async def good_picture_button(message: types.Message):
+async def good_picture_button(message: types.Message, state: FSMContext):
     await message.answer("We all set, here you go.",
                          reply_markup=types.ReplyKeyboardRemove())
+    global data
+    path_to_modified_image = create_image(data)
+    data = defaultdict(str)
+
+    await bot.send_photo(chat_id=message.chat.id,
+                         photo=open(f'{path_to_modified_image}', 'rb'))
+    upload_to_yadisk(message.from_user.id, path_to_modified_image)
 
 
 @dp.message_handler(Text(equals="Nope, misclick"))
@@ -67,13 +85,14 @@ async def nope_misclick_button(message: types.Message):
 
 @dp.message_handler(state=Form.quote)
 async def process_text(message: types.Message, state: FSMContext):
+    data['quote'] = message.text
     await message.reply(message.text)
 
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     buttons = ["Nice quote", "Wrong quote"]
     keyboard.add(*buttons)
     await message.answer("Will it go well with the"
-                         " picture you gave me?",
+                         " picture?",
                          reply_markup=keyboard)
     await state.finish()
 
