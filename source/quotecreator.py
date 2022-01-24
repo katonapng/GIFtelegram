@@ -10,12 +10,8 @@ from applytext import create_image
 from createGIF import create_GIF
 from disk import get_all_users_GIFs, get_user_GIFs, upload_to_yadisk
 
-token = '5078999708:AAE0tvQEaOABAzXm6VIAUVZqZ_1BgASS9JU'
+token = 'token'
 bot = Bot(token)
-
-# bot_token = getenv("BOT_TOKEN",  parse_mode=types.ParseMode.HTML)
-# if not bot_token:
-#     exit("Error: no token provided")
 
 dp = Dispatcher(bot, storage=MemoryStorage())
 logging.basicConfig(level=logging.INFO)
@@ -109,7 +105,7 @@ async def cmd_gif(message: types.Message):
     """Function to handle \\gif command.
 
     User keyboard is replaced with one button to
-    signal that user sent all desired media.
+    signal that user have sent all desired media.
 
     Args:
         message (types.Message): message sent by the user.
