@@ -1,0 +1,8 @@
+﻿-   repo: https://gitlab.com/pycqa/flake8
+    rev: '3.8.3'
+    hooks:
+    -   id: flake8
+-   repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.4.2
+    hooks:
+    -   id: isort

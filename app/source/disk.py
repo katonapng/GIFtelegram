@@ -2,7 +2,7 @@ import os
 
 import yadisk
 
-my_token = "disktoken"
+my_token = "AQAAAAAmXv4TAAegUVTtDitFWUGflCjk2UAbUDY"
 
 
 def upload_to_yadisk(user_id: int, file_path: str, _type: str):
