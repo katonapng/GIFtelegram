@@ -2,7 +2,7 @@ import os
 
 import yadisk
 
-my_token = "AQAAAAAmXv4TAAegUVTtDitFWUGflCjk2UAbUDY"
+my_token = "disktoken"
 
 
 def upload_to_yadisk(user_id: int, file_path: str, _type: str):
@@ -23,7 +23,7 @@ def upload_to_yadisk(user_id: int, file_path: str, _type: str):
         y.mkdir('/quotecreator/' + f'{_type}/' + f'{user_id}')
     try:
         y.upload(file_path, '/quotecreator/' + f'{_type}/' + f'{user_id}/' +
-                 file_path.replace('output/', ''))
+                 file_path)
         os.remove(file_path)
     except yadisk.exceptions.ParentNotFoundError:
         return yadisk.exceptions.ParentNotFoundError

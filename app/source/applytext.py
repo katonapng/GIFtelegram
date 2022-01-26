@@ -33,7 +33,7 @@ def create_image(quote: str, pic: str):
                           line, (237, 230, 211), font=quote_font)
         height += height_text
 
-    path = f"./output/{pic}.jpg"
+    path = f"{pic}.jpg"
     picture.save(path)
     picture.close()
     os.remove(f"./photos/{pic}.jpg")

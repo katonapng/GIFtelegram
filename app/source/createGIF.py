@@ -48,6 +48,6 @@ def create_GIF(name_id: str, data: List[str]):
         gif.append(imread(f'./photos/{file_id}.png'))
         os.remove(f'./photos/{file_id}.png')
 
-    path = f'./output/{name_id}.gif'
+    path = f'{name_id}.gif'
     mimsave(path, gif, duration=0.5)
     return path

@@ -1,4 +1,5 @@
 import os
+import logging
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -11,11 +12,20 @@ from disk import get_all_users_GIFs, get_user_GIFs, upload_to_yadisk
 from yadisk.exceptions import ParentNotFoundError
 
 
-token = '5078999708:AAF4KcAWUfQuoTNHY6M1g0K_B9zhJS6QcWA'
+token = 'token'
 bot = Bot(token)
 
-dp = Dispatcher(bot, storage=MemoryStorage())
+# webhook settings
+WEBHOOK_HOST = f'https://quiet-refuge-67601.herokuapp.com'
+WEBHOOK_PATH = f'/webhook/{token}'
+WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
 
+# webserver settings
+WEBAPP_HOST = '0.0.0.0'
+WEBAPP_PORT = int(os.getenv('PORT', 5001))
+
+dp = Dispatcher(bot, storage=MemoryStorage())
+logging.basicConfig(level=logging.INFO)
 
 class QuoteForm(StatesGroup):
     picture = State()
@@ -205,13 +215,11 @@ async def upload(message: types.Message, state: FSMContext, _type: str):
             await state.finish()
 
         except KeyError:
-            keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            buttons = ["That's all"]
-            keyboard.add(*buttons)
-            await message.answer("Stop joking around and "
-                                 "give me some pictures so "
-                                 "I could finish my work.",
-                                 reply_markup=keyboard)
+            await message.answer("Stop joking around!\n"
+                                 "Ask me again, if you want "
+                                 "this job done.",
+                                 reply_markup=types.ReplyKeyboardRemove())
+            await state.finish()
         except FileNotFoundError:
             await message.answer('Something went wrong with files.\n'
                                  'Try again.')
@@ -560,7 +568,22 @@ async def echo_in_state(message: types.Message):
                          'command to start it. Maybe try /cancel.')
 
 
-if __name__ == "__main__":
+async def on_startup(dp):
+    logging.warning('Starting connection. ')
+    await bot.set_webhook(WEBHOOK_URL,drop_pending_updates=True)
+
+
+async def on_shutdown(dp):
+    logging.warning('Bye! Shutting down webhook connection')
+
+
+def main():
     # Запуск бота
     # executor.start_polling(dp, skip_updates=True)
-    executor.start_webhook(dp, 'https://rocky-everglades-93337.herokuapp.com/' + token)
+    executor.start_webhook(dp, webhook_path=WEBHOOK_PATH,
+                           skip_updates=True, on_startup=on_startup, 
+                           host=WEBAPP_HOST, port=WEBAPP_PORT)
+
+
+if __name__ == "__main__":
+    main() 

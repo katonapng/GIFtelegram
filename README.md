@@ -1,6 +1,8 @@
 # QuoteCreator bot
 QuoteCreator is a bot to create images with text and gifs.
 
+Go to https://t.me/QuoteCreatorBot to try it!
+
 Command list:
 - /start - begin interaction
 - /help - get all available requests
