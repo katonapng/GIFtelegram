@@ -12,7 +12,7 @@ from disk import get_all_users_GIFs, get_user_GIFs, upload_to_yadisk
 from yadisk.exceptions import ParentNotFoundError
 
 
-token = 'token'
+token = os.getenv('token')
 bot = Bot(token)
 
 # webhook settings
