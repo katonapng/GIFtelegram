@@ -1,4 +1,3 @@
-import logging
 import os
 
 from aiogram import Bot, Dispatcher, executor, types
@@ -15,7 +14,6 @@ token = 'token'
 bot = Bot(token)
 
 dp = Dispatcher(bot, storage=MemoryStorage())
-logging.basicConfig(level=logging.INFO)
 
 
 class QuoteForm(StatesGroup):
