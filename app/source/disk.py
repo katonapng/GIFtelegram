@@ -2,7 +2,7 @@ import os
 
 import yadisk
 
-my_token = os.getenv('disktoken')
+my_token = os.getenv['disktoken']
 
 
 def upload_to_yadisk(user_id: int, file_path: str, _type: str):

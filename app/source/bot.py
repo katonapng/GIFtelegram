@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -11,12 +11,11 @@ from createGIF import create_GIF
 from disk import get_all_users_GIFs, get_user_GIFs, upload_to_yadisk
 from yadisk.exceptions import ParentNotFoundError
 
-
-token = os.getenv('token')
+token = os.getenv['token']
 bot = Bot(token)
 
 # webhook settings
-WEBHOOK_HOST = f'https://quiet-refuge-67601.herokuapp.com'
+WEBHOOK_HOST = 'https://quiet-refuge-67601.herokuapp.com'
 WEBHOOK_PATH = f'/webhook/{token}'
 WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
 
@@ -26,6 +25,7 @@ WEBAPP_PORT = int(os.getenv('PORT', 5001))
 
 dp = Dispatcher(bot, storage=MemoryStorage())
 logging.basicConfig(level=logging.INFO)
+
 
 class QuoteForm(StatesGroup):
     picture = State()
@@ -503,7 +503,7 @@ async def cmd_help(message: types.Message):
                          " image and text"
                          "/gif - create a gif out of given photo "
                          "or album of photos.\n"
-                         "/getgif - get created gifs"
+                         "/getgif - get created gifs\n"
                          "/cancel - cancel any operation "
                          "except quote typing")
 
@@ -570,7 +570,7 @@ async def echo_in_state(message: types.Message):
 
 async def on_startup(dp):
     logging.warning('Starting connection. ')
-    await bot.set_webhook(WEBHOOK_URL,drop_pending_updates=True)
+    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
 
 
 async def on_shutdown(dp):
@@ -581,9 +581,9 @@ def main():
     # Запуск бота
     # executor.start_polling(dp, skip_updates=True)
     executor.start_webhook(dp, webhook_path=WEBHOOK_PATH,
-                           skip_updates=True, on_startup=on_startup, 
+                           skip_updates=True, on_startup=on_startup,
                            host=WEBAPP_HOST, port=WEBAPP_PORT)
 
 
 if __name__ == "__main__":
-    main() 
+    main()
