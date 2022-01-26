@@ -488,7 +488,7 @@ async def cmd_help(message: types.Message):
         message (types.Message): message sent by the user.
 
     """
-    await message.answer("Here you go, all the request you can ask of me\n"
+    await message.answer("Here you go, all the requests you can ask of me\n"
                          "If I'm in the mood, i shall answer you:\n"
                          "/start - begin interaction\n"
                          "/help - get all available requests\n"
