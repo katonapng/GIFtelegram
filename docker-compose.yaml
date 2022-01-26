@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  quotecreator:
+    build: ./app/
+    volumes:
+      - type: bind
+        source: .
+        target: /app
